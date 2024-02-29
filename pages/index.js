@@ -1,118 +1,144 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import { useSocket } from "@/context/socket";
+import usePeer from "@/hooks/usePeer";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  // const socket = useSocket();
+  // // const { peer, myId } = usePeer();
+  // socket?.on("connect", () => {
+  //   console.log(socket);
+  //   console.log(myId);
+  //   console.log(peer);
+  // });
+  // const { peer, myId } = usePeer();
+
+  // useEffect(() => {
+  //   // Access peer and myId here
+  //   if (peer && myId) {
+  //     console.log("Peer:", peer);
+  //     console.log("My ID:", myId);
+  //   }
+  // }, [peer, myId]);
+
+  const router = useRouter();
+  const [input, setInput] = useState();
+  const [roomId, setRoomId] = useState();
+
+  const createAndJoin = () => {
+    const op = uuidv4();
+    setRoomId(op);
+    // router.push(` /${roomId} `);
+  };
+  // console.log(socket);
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <h1 className="text-center my-8 text-3xl">Video chat App</h1>
+      {/* host meeting */}
+      <div className="flex flex-col container mx-auto  md:flex-row">
+        <div className="mx-auto p-4 w-full  md:w-1/3">
+          <h2 className=" text-2xl text-center my-6 text-green-600 ">
+            Create The Meeting
+          </h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log(input, roomId);
+              router.push(`/${input}/${roomId}`);
+            }}
+            className=" flex flex-col mx-auto space-y-6 "
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+            {/* {code && (
+              <div
+                type="text"
+                className="border p-2 flex flex-row justify-between"
+              >
+                <p className=" w-11/12 overflow-hidden">{code}</p>
+                {!copys ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    onClick={copy}
+                    className="h-6 w-6 cursor-pointer"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-green-500 bg-slate-100 rounded-xl"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                )}
+              </div>
+            )} */}
+            <button
+              className=" bg-blue-500 text-white py-2 rounded-lg "
+              onClick={createAndJoin}
+            >
+              Create Meeting
+            </button>
+          </form>
+        </div>
+        {/* join meeting */}
+        <div className="mx-auto p-4 w-full  md:w-1/3">
+          <h2 className="text-2xl text-center my-6 text-green-600 ">
+            join The Meeting
+          </h2>
+          <form
+            className="flex flex-col mx-auto space-y-6 "
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log(input, roomId);
+              router.push(`/${input}/${roomId}`);
+            }}
+          >
+            <input
+              required={true}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="border p-2"
+              placeholder="Enter your Name"
             />
-          </a>
+            <input
+              required
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              type="text"
+              className="border p-2"
+              placeholder="Enter your code"
+            />
+            <button
+              type="submit"
+              className=" bg-blue-500 text-white py-2 rounded-lg"
+            >
+              join Meeting
+            </button>
+          </form>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   );
 }
