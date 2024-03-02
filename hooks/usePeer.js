@@ -20,7 +20,7 @@ const usePeer = () => {
       myPeer = new (await import("peerjs")).default();
       setPeer(myPeer);
       myPeer.on("open", (id) => {
-        console.log(id);
+        // console.log(id);
         console.log(peer);
         setMyId(id);
         socket?.emit("join-room", roomId, id);
