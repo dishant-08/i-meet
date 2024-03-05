@@ -8,6 +8,7 @@ const { useState, useEffect, useRef } = require("react");
 const usePeer = () => {
   const socket = useSocket();
   const roomId = useRouter().query.roomId;
+  const input = useRouter().query.input;
   const [peer, setPeer] = useState();
   const [myId, setMyId] = useState();
   const isPeer = useRef(false);
@@ -23,7 +24,7 @@ const usePeer = () => {
         // console.log(id);
         console.log(peer);
         setMyId(id);
-        socket?.emit("join-room", roomId, id);
+        socket?.emit("join-room", roomId, id, input);
       });
     })();
   }, []);
