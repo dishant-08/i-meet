@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 const Room = () => {
   const { roomId } = useRouter().query;
   const { input } = useRouter().query;
+  const [isSideBar, setSideBar] = useState(false);
 
   const socket = useSocket();
   // const { peer, myId } = usePeer();
@@ -141,6 +142,11 @@ const Room = () => {
     };
   }, [players, setPlayers, socket]);
 
+  const handleSideBar = (isOpen) => {
+    setSideBar(isOpen);
+    console.log("dekh sidebar", isSideBar);
+  };
+
   console.log(players);
   // console.log(playerHighlighted);
 
@@ -158,10 +164,40 @@ const Room = () => {
             />
           );
         })} */}
-      <div className=" flex ">
+      <div className=" flex   ">
         <div className="">
-          <main>
-            <div className="absolute w-9/12 left-0 right-0 mx-auto top-20 bottom-50 h-[calc(100vh-20px-100px)]">
+          <main className=" flex flex-col md:hidden    gap-4 ">
+            <div className="  md:w-9/12 left-0 right-0 mx-auto top-0 bottom-50  md:h-[calc(100vh-20px-100px)]">
+              {playerHighlighted && (
+                <Player
+                  url={playerHighlighted.url}
+                  muted={playerHighlighted.muted}
+                  playing={playerHighlighted.playing}
+                  name={input}
+                  isActive
+                />
+              )}
+            </div>
+            <div className=" flex flex-col   overflow-y-auto    left-2 bottom-0 ">
+              {nonHighlightedPlayer &&
+                Object.keys(nonHighlightedPlayer).map((playerId) => {
+                  const { url, muted, playing, name } =
+                    nonHighlightedPlayer[playerId];
+                  return (
+                    <Player
+                      key={playerId}
+                      url={url}
+                      muted={muted}
+                      playing={playing}
+                      name={name}
+                      isActive={false}
+                    />
+                  );
+                })}
+            </div>
+          </main>
+          <main className=" hidden md:block ">
+            <div className="absolute w-9/12 left-0 right-0 mx-auto top-20 bottom-50  h-[calc(100vh-20px-100px)]">
               {playerHighlighted && (
                 <Player
                   url={playerHighlighted.url}
@@ -190,15 +226,21 @@ const Room = () => {
                 })}
             </div>
           </main>
+
           <AllButton
             muted={playerHighlighted?.muted}
             playing={playerHighlighted?.playing}
             toggleAudio={toggleAudio}
             toggleVideo={toggleVideo}
+            sideBar={handleSideBar}
             // leaveRoom={leaveRoom}
           />
         </div>
-        <ChatComp name={input} />
+        {isSideBar && (
+          <div className=" mobile-chat   ">
+            <ChatComp name={input} />
+          </div>
+        )}
       </div>
     </>
   );

@@ -47,14 +47,15 @@ const ChatComp = (name) => {
   // console.log(Object.keys(socket.rooms));
 
   return (
-    <div className="absolute px-1 gap-3  right-0 flex flex-col rounded-xl bg-slate-400 h-screen w-1/5">
-      <div className=" relative ">
-        <div className=" p-2  flex flex-col overflow-y-auto  h-[600px] ">
+    <div className="md:absolute px-1 gap-3 z-40 w-full  right-0 flex flex-col rounded-xl p-2 bg-slate-400 h-[92%] md:w-1/5">
+      <div className=" relative  ">
+        <div className=" p-2   bg-slate-400  flex flex-col overflow-y-auto  h-[600px] ">
           {/* Render chat messages here */}
           <div className=" absolute bottom-0  ">
             {chat.map((message, index) => (
-              <div key={index}>
-                <strong>{message.name.name}:</strong> {message.input}
+              <div key={index} className="flex  ">
+                <strong className=" mx-1 ">{message.name.name}:</strong>{" "}
+                {message.input}
               </div>
             ))}
           </div>

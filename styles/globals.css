@@ -5,3 +5,11 @@
 body {
   overflow-x: hidden;
 }
+
+.mobile-chat {
+  @media (max-width: 640px) {
+    position: absolute;
+
+    background-color: rgb(148 163 184 / var(--tw-bg-opacity));
+  }
+}
