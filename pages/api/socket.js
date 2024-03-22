@@ -35,6 +35,14 @@ const SocketHandler = async (req, res) => {
         // Emit the received chat message to all connected clients in the same room
         io.to(roomId).emit("receive-chat", { name, input });
       });
+      socket.on("toggle-video", (roomId, userId) => {
+        socket.join(roomId); // This line joins the socket to the specified room
+        socket.broadcast.to(roomId).emit("user-toggle-video", userId);
+      });
+      socket.on("toggle-audio", (roomId, userId) => {
+        socket.join(roomId); // This line joins the socket to the specified room
+        socket.broadcast.to(roomId).emit("user-toggle-audio", userId);
+      });
     });
   }
   res.end();

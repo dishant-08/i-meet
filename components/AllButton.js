@@ -7,7 +7,7 @@ const AllButton = (props) => {
   const { muted, playing, toggleAudio, toggleVideo, leaveRoom } = props;
 
   return (
-    <div className="w-[30%] fixed  flex justify-between bg-slate-500 bottom-5 left-0 right-0 mx-auto w-300">
+    <div className="w-[30%] fixed  flex justify-between px-2 rounded-xl bg-slate-500 bottom-5 left-0 right-0 mx-auto w-300">
       {muted ? (
         <MicOff
           className={cx("p-4 rounded-full text-white cursor-pointer", {

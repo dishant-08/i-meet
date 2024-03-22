@@ -47,23 +47,32 @@ const ChatComp = (name) => {
   // console.log(Object.keys(socket.rooms));
 
   return (
-    <div className="absolute right-0 flex flex-col bg-slate-400 h-screen w-1/5">
-      <div className="border-2 border-blue-700 flex flex-col-reverse h-2/3">
-        {/* Render chat messages here */}
-        {chat.map((message, index) => (
-          <div key={index}>
-            <strong>{message.name.name}:</strong> {message.input}
+    <div className="absolute px-1 gap-3  right-0 flex flex-col rounded-xl bg-slate-400 h-screen w-1/5">
+      <div className=" relative ">
+        <div className=" p-2  flex flex-col overflow-y-auto  h-[600px] ">
+          {/* Render chat messages here */}
+          <div className=" absolute bottom-0  ">
+            {chat.map((message, index) => (
+              <div key={index}>
+                <strong>{message.name.name}:</strong> {message.input}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-      <form onSubmit={handleSendMessage}>
+      <form className=" flex gap-3 " onSubmit={handleSendMessage}>
         <input
           type="text"
-          className="border-blue-900 border-b w-80 focus:outline-none"
+          className="border-blue-900 border-b p-2 rounded-xl w-80 focus:outline-none"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button type="submit">Send</button>
+        <button
+          className=" p-1 rounded-md bg-red-500 text-white "
+          type="submit"
+        >
+          Send
+        </button>
       </form>
     </div>
   );

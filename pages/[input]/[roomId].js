@@ -5,6 +5,7 @@ import { useSocket } from "@/context/socket";
 import useMedia from "@/hooks/useMedia";
 import usePeer from "@/hooks/usePeer";
 import usePlayer from "@/hooks/usePlayer";
+import { cloneDeep } from "lodash";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
@@ -21,8 +22,14 @@ const Room = () => {
   });
   const { peer, myId } = usePeer();
   const { stream } = useMedia();
-  const { players, setPlayers, playerHighlighted, nonHighlightedPlayer } =
-    usePlayer(myId);
+  const {
+    players,
+    setPlayers,
+    playerHighlighted,
+    nonHighlightedPlayer,
+    toggleAudio,
+    toggleVideo,
+  } = usePlayer(myId);
   console.log(stream);
 
   useEffect(() => {
@@ -97,6 +104,43 @@ const Room = () => {
     }));
   }, [myId, setPlayers, stream]);
 
+  useEffect(() => {
+    if (!socket) return;
+    const handleToggleAudio = (userId) => {
+      console.log(`user with id ${userId} toggled audio`);
+      setPlayers((prev) => {
+        const copy = cloneDeep(prev);
+        copy[userId].muted = !copy[userId].muted;
+        return { ...copy };
+      });
+    };
+
+    const handleToggleVideo = (userId) => {
+      console.log(`user with id ${userId} toggled video`);
+      setPlayers((prev) => {
+        const copy = cloneDeep(prev);
+        copy[userId].playing = !copy[userId].playing;
+        return { ...copy };
+      });
+    };
+
+    const handleUserLeave = (userId) => {
+      console.log(`user ${userId} is leaving the room`);
+      users[userId]?.close();
+      const playersCopy = cloneDeep(players);
+      delete playersCopy[userId];
+      setPlayers(playersCopy);
+    };
+    socket.on("user-toggle-audio", handleToggleAudio);
+    socket.on("user-toggle-video", handleToggleVideo);
+    socket.on("user-leave", handleUserLeave);
+    return () => {
+      socket.off("user-toggle-audio", handleToggleAudio);
+      socket.off("user-toggle-video", handleToggleVideo);
+      socket.off("user-leave", handleUserLeave);
+    };
+  }, [players, setPlayers, socket]);
+
   console.log(players);
   // console.log(playerHighlighted);
 
@@ -149,8 +193,8 @@ const Room = () => {
           <AllButton
             muted={playerHighlighted?.muted}
             playing={playerHighlighted?.playing}
-            // toggleAudio={toggleAudio}
-            // toggleVideo={toggleVideo}
+            toggleAudio={toggleAudio}
+            toggleVideo={toggleVideo}
             // leaveRoom={leaveRoom}
           />
         </div>
